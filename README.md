@@ -42,20 +42,25 @@ O modelo padrão é `gpt-6-luna`; troque com `OPENAI_MODEL` no `.env`. Nem todo 
 ## O filme (stop_motion/)
 
 Stop motion de massinha feito no Blender 4.2 por script, sem animar à mão. Cada `blender/cenaN.py` monta o cenário,
-posa os bonecos quadro a quadro a 12 fps e renderiza no Cycles. `montar.py` junta as sete cenas com vinheta, grão e
-legenda.
+posa os bonecos quadro a quadro a 12 fps e renderiza no Cycles. `montar.py` junta as sete cenas com vinheta, grão,
+legenda e áudio.
 
 - Bonecos: conceito em imagem gerada por IA, malha 3D por image-to-3D (`gerar.py`, fal.ai), rig automático e rostos
   trocáveis de stop motion (`rostos.py`, `expressoes.sh`, `mascaras.py`).
 - Cara de massinha: material com subsurface, digitais e dedadas, textura que "ferve" a cada quadro, tremor de posição
   e de luz, profundidade de campo curta.
 - `elenco.py`: IK de dois ossos, ciclo de passos, troca de boca e piscada, gravação de um quadro por pose.
+- Vozes: `vozes.py` gera cada fala no [Kokoro-82M](https://github.com/thewh1teagle/kokoro-onnx), local e gratuito, e
+  acelera só o necessário para caber antes da próxima fala. Ruído de sala, cliques, trinco e papel são ruído filtrado
+  no próprio ffmpeg.
 
 ```
 cd stop_motion/blender
 blender -b -P cena1.py -- still 30    # um quadro de teste
 blender -b -P cena1.py -- anim        # a cena inteira em ../saida/cena1/
-cd .. && python3 montar.py            # saida/curta.mp4
+cd ..
+python vozes.py                       # Python com kokoro-onnx e os arquivos do modelo em ~/.local/opt/kokoro
+python3 montar.py                     # saida/curta.mp4
 ```
 
 Os bonecos (`saida/conceito/*.glb`) e os rostos (`saida/rostos/`) estão na release do repositório; extraia em
