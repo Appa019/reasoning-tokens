@@ -1,0 +1,5 @@
+.env
+.venv/
+__pycache__/
+stop_motion/saida
+stop_motion/custos.jsonl
